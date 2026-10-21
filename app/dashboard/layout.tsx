@@ -27,6 +27,12 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex min-h-screen bg-[var(--bg)] text-[var(--text)]">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-[var(--surface)] focus:px-4 focus:py-2 focus:text-[var(--text)] focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4B6B76]"
+      >
+        Skip to main content
+      </a>
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex print:hidden w-[260px] flex-col border-r border-[var(--ov-0f)] bg-[var(--surface)]">
         <div className="p-8 flex flex-col h-full">
@@ -42,6 +48,7 @@ export default function DashboardLayout({
               <li>
                 <Link
                   href="/dashboard"
+                  aria-current="page"
                   className="flex items-center gap-3 px-4 py-3 text-[var(--text)] bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
                 >
                   <LayoutGrid size={20} className="text-[var(--text)]" aria-hidden="true" />
@@ -133,120 +140,4 @@ export default function DashboardLayout({
                 <li>
                   <Link
                     href="/dashboard/contributions"
-                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <FileText size={20} aria-hidden="true" />
-                    <span className="font-medium">Contributions</span>
-                  </Link>
-                </li>
-                <li>
-                  <FeatureSpotlight featureId="multi-wallet" align="left">
-                    <Link
-                      href="/dashboard/wallet"
-                      className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                    >
-                      <Wallet size={20} aria-hidden="true" />
-                      <span className="font-medium">Wallet</span>
-                    </Link>
-                  </FeatureSpotlight>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/achievements"
-                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <Award size={20} aria-hidden="true" />
-                    <span className="font-medium">Achievements</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/leaderboard"
-                    className="flex items-center gap-3 px-4 py-3 text-[#9A9A9A] hover:text-[#EBEBEB] hover:bg-[#ffffff0a] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <Trophy size={20} aria-hidden="true" />
-                    <span className="font-medium">Leaderboard</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/notifications"
-                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <Bell size={20} aria-hidden="true" />
-                    <span className="font-medium">Notifications</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/settings"
-                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <Settings size={20} aria-hidden="true" />
-                    <span className="font-medium">Settings</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/help"
-                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
-                  >
-                    <HelpCircle size={20} aria-hidden="true" />
-                    <span className="font-medium">Help Center</span>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-
-            {/* Logout */}
-            <div className="mt-auto pt-10">
-              <Link
-                href="/"
-                className="flex items-center gap-3 px-4 py-3 text-[#FF5B5B] hover:bg-[#ff5b5b1a] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5B5B]"
-              >
-                <LogOut size={20} aria-hidden="true" />
-                <span className="font-medium">Log out</span>
-              </Link>
-            </div>
-          </div>
-        </aside>
-
-      {/* Main Content Area */}
-      {/* Issue #217 – Network mismatch guard wraps the entire dashboard */}
-      <NetworkGuard>
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Top Header */}
-        <header className="print:hidden flex items-center justify-end p-6 md:px-10 py-5 gap-3">
-          <DashboardHeaderSearch />
-          <InstallPWAButton />
-          <ThemeToggle />
-          <NotificationDropdown />
-          <div
-            className="flex items-center border border-[var(--ov-1a)] rounded-full px-4 py-2 gap-2 bg-[var(--ov-05)]"
-            role="status"
-            aria-label={`Connected wallet: ${WALLET_DISPLAY}`}
-          >
-            <span className="text-sm font-medium text-[var(--muted2)]">{WALLET_DISPLAY}</span>
-            <CopyButton value={WALLET_ADDRESS} aria-label="Copy wallet address" />
-          </div>
-        </header>
-
-          {/* Page Content */}
-          <main className="flex-1 px-6 md:px-10 pb-10">
-            <EmailVerificationBanner />
-            <StaleDataBanner />
-            {/* Issue #220 – USDC trustline check banner */}
-            <TrustlineBanner address={WALLET_ADDRESS} />
-            {children}
-          </main>
-
-          <MobileBottomNav />
-        </div>
-        <OnboardingModal />
-        <FeedbackWidget />
-        <ShortcutsModal />
-      </div>
-      </NetworkGuard>
-    </ConnectionStatusProvider>
-  );
-}
+                    className="flex items-center gap-3 px-4 py-3 text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--ov-0a)] rounded-lg transition-colors border-l-2 border-transparent focus-visible:outline-none
