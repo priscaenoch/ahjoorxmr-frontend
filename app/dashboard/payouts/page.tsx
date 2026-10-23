@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback } from "react";
 import Link from "next/link";
 import { ArrowUpRight, CheckCircle2, Clock3, ChevronDown, FileText, X, AlertTriangle, Send } from "lucide-react";
 import ExportButton from "@/components/ui/ExportButton";
@@ -14,6 +14,7 @@ import {
   type PayoutRecord,
   type PayoutStatus,
 } from "@/data/payouts";
+import { useLoadMore } from "@/hooks/useLoadMore";
 
 // ---------------------------------------------------------------------------
 // Local formatting helpers (screen-only variants, keep in sync with data/payouts.ts)
@@ -41,53 +42,12 @@ function statusStyles(status: PayoutStatus) {
   return "bg-[#3a2f18] text-[#ffd56a] border-[#665221]";
 }
 
-// ---------------------------------------------------------------------------
-// Round close checklist data (organizer pre-payout confirmation)
-// ---------------------------------------------------------------------------
-interface ChecklistMember {
-  address: string;
-  name: string;
-  paid: boolean;
-}
-
-interface RoundCloseChecklist {
-  circleName: string;
-  roundNumber: number;
-  tokenSymbol: string;
-  poolBalance: number;
-  expectedPayout: number;
-  recipientAddress: string;
-  members: ChecklistMember[];
-}
-
-const MOCK_ROUND_CLOSE_CHECKLIST: RoundCloseChecklist = {
-  circleName: "Stark Savings Circle",
-  roundNumber: 4,
-  tokenSymbol: "USDC",
-  poolBalance: 1200,
-  expectedPayout: 1000,
-  recipientAddress: "0x04f2a1b9c3d8e7f60a1b2c3d4e5f60718293a4b5c6d7e8f9012345678abcdef",
-  members: [
-    { address: "0x04f2a1b9c3d8e7f60a1b2c3d4e5f60718293a4b5c6d7e8f9012345678abcdef", name: "Amara O.", paid: true },
-    { address: "0x07c3d4e5f60718293a4b5c6d7e8f9012345678abcdef04f2a1b9c3d8e7f6", name: "Bilal K.", paid: true },
-    { address: "0x0a1b2c3d4e5f60718293a4b5c6d7e8f9012345678abcdef04f2a1b9c3d8", name: "Chen W.", paid: false },
-    { address: "0x0d4e5f60718293a4b5c6d7e8f9012345678abcdef04f2a1b9c3d8e7f60a", name: "Dara M.", paid: false },
-  ],
-};
-
-const PAGE_SIZE = 5;
-
 export default function PayoutsPage() {
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [checklistOpen, setChecklistOpen] = useState(false);
-  const [reminderSent, setReminderSent] = useState(false);
-
-  const visiblePayouts = useMemo(
-    () => MOCK_PAYOUT_HISTORY.slice(0, visibleCount),
-    [visibleCount]
+  const { visibleCount, hasMore, loadMore, sentinelRef, announcement } = useLoadMore(
+    MOCK_PAYOUT_HISTORY.length,
+    "dashboard:payouts"
   );
-
-  const hasMore = visibleCount < MOCK_PAYOUT_HISTORY.length;
+  const visiblePayouts = MOCK_PAYOUT_HISTORY.slice(0, visibleCount);
 
   const checklist = MOCK_ROUND_CLOSE_CHECKLIST;
   const unpaidMembers = useMemo(
@@ -401,18 +361,17 @@ export default function PayoutsPage() {
               </table>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-[var(--ov-0f)] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-3">
-                <ExportButton getRows={getExportRows} filename="payout-history" />
-                <span className="text-xs text-[var(--muted)]">
-                  Showing {visiblePayouts.length} of {MOCK_PAYOUT_HISTORY.length}
-                </span>
-              </div>
-              {hasMore && (
+            <div ref={sentinelRef} aria-hidden="true" className="h-px" />
+            <div className="flex items-center justify-between gap-4 border-t border-[var(--ov-0f)] px-6 py-4">
+              <p className="text-sm text-[var(--muted)]" role="status" aria-live="polite">
+                {announcement || `Showing ${visiblePayouts.length} of ${MOCK_PAYOUT_HISTORY.length} payouts`}
+              </p>
+
+              {hasMore ? (
                 <button
                   type="button"
-                  onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-                  className="inline-flex items-center gap-1 rounded-xl border border-[var(--ov-14)] px-3 py-2 text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--ov-08)]"
+                  onClick={loadMore}
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--ov-16)] bg-[var(--ov-08)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--ov-10)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4B6B76]"
                 >
                   Load more
                   <ChevronDown size={14} aria-hidden="true" />
