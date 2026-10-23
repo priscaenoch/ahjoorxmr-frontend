@@ -44,6 +44,8 @@
 * [TanStack Query](https://tanstack.com/query) for server-state data fetching/caching (see `lib/api` and `lib/hooks`).
 * A typed API client layer (`lib/api`) that serves mock data locally and switches to a real HTTP backend via `NEXT_PUBLIC_API_URL` — see [Environment variables](#environment-variables).
 
+See [Project Architecture](docs/ARCHITECTURE.md) for folder responsibilities, data flow, and conventions for adding pages and feature spotlights.
+
 ---
 
 ## Getting started
